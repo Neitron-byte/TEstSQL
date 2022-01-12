@@ -32,6 +32,7 @@ private:
     Ui::MainWindow *ui;
     QSqlDatabase m_db;
     QStringList m_listTable;
+    QSqlTableModel* m_model;
 
 };
 #endif // MAINWINDOW_H

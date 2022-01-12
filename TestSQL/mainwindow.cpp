@@ -48,6 +48,7 @@ void MainWindow::addTable()
         qDebug() << table;
 
     }
+    ui->comboBox_dev->addItem("  ");
     ui->comboBox_dev->addItems(m_listTable);
 }
 
@@ -63,6 +64,7 @@ MainWindow::MainWindow(QWidget *parent)
 //    ui->comboBox_dev->addItem("E3");
 
     connectionDB();
+    m_model = new QSqlTableModel(this, m_db);
     createTables();
     addTable();
 
@@ -72,6 +74,7 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow()
 {
     delete ui;
+    delete m_model;
 }
 
 
@@ -88,25 +91,25 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_comboBox_dev_currentIndexChanged(const QString &arg1)
 {
-    qDebug() << arg1;
-    QSqlTableModel model;
-    model.setTable(arg1);
-    model.select();
-    model.setEditStrategy(QSqlTableModel::OnManualSubmit);
+    if (arg1 != "  "){
+        qDebug() << arg1;
+        m_model->setTable(arg1);
+        m_model->select();
+        //model.setEditStrategy(QSqlTableModel::OnManualSubmit);
 
-    qDebug() << model.rowCount();
+        qDebug() << m_model->rowCount();
 
-    for (int nRow = 0; nRow < model.rowCount(); ++nRow) {
-    QSqlRecord rec = model.record(nRow);
-    int nNumber = rec.value("id").toInt();
-    qDebug() << nNumber;
-    QString strName = rec.value ( "comments").toString();
-    qDebug() << strName;
+        for (int nRow = 0; nRow <  m_model->rowCount(); ++nRow) {
+        QSqlRecord rec =  m_model->record(nRow);
+        int nNumber = rec.value("id").toInt();
+        qDebug() << nNumber;
+        QString strName = rec.value ( "comments").toString();
+        qDebug() << strName;
+        }
+        //model.setHeaderData(0, Qt::Horizontal, QObject::tr("ID"));
+        //model.setHeaderData(1, Qt::Horizontal, QObject::tr("Comments"));
+
+        ui->tableView_comments->setModel(m_model);
     }
-    //model.setHeaderData(0, Qt::Horizontal, QObject::tr("ID"));
-    //model.setHeaderData(1, Qt::Horizontal, QObject::tr("Comments"));
-
-    ui->tableView_comments->setModel(&model);
-
-    ui->tableView_comments->show();
+    //ui->tableView_comments->show();
 }
