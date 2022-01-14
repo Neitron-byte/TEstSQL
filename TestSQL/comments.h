@@ -17,7 +17,7 @@ class comments : public QWidget
 {
     Q_OBJECT
     void connectionDB();
-    void createTables();
+    void createTables(const QString &);
     void addTable();
 
 public:
@@ -40,6 +40,7 @@ private:
     QStringList m_listTable;
     QSqlTableModel* m_model;
     QString m_currentTable;
+    QStringList m_table {"E6","E34","E18","E8","E3","E4","E2","E19"};
 
 };
 
